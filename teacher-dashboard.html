@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teacher Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="teacher-styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <span>TeacherHub</span>
+                </div>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#dashboard" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#grading" class="nav-item" data-page="grading">
+                    <i class="fas fa-clipboard-list"></i>
+                    <span>Grading</span>
+                </a>
+                <a href="#announcements" class="nav-item" data-page="announcements">
+                    <i class="fas fa-bullhorn"></i>
+                    <span>Announcements</span>
+                </a>
+                <a href="#profile" class="nav-item" data-page="profile">
+                    <i class="fas fa-user"></i>
+                    <span>Profile</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="header-right">
+                    <button id="openProfileBtn" class="profile-icon-btn" type="button" title="My Profile">
+                        <i class="fas fa-user-circle"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content">
+                <div id="teacherPageMessage" class="message" style="display:none;"></div>
+
+                <section id="dashboard" class="page active">
+                    <div class="dashboard-grid">
+                        <div class="card stat-card">
+                            <div class="stat-icon assignments">
+                                <i class="fas fa-chalkboard"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Classes</p>
+                                <p class="stat-value" id="totalClasses">0</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon notifications">
+                                <i class="fas fa-clipboard-check"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Pending Grading</p>
+                                <p class="stat-value" id="pendingGrading">0</p>
+                            </div>
+                        </div>
+                        <div class="card stat-card">
+                            <div class="stat-icon gpa">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="stat-content">
+                                <p class="stat-label">Total Students</p>
+                                <p class="stat-value" id="totalStudents">0</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3>Grading Status</h3>
+                        <div id="gradingStatusContainer"></div>
+                    </div>
+                </section>
+
+                <section id="grading" class="page">
+                    <div class="page-header">
+                        <h2>Student Grades</h2>
+                    </div>
+                    <div class="card">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="classSelectForGrading">Grade</label>
+                                <select id="classSelectForGrading">
+                                    <option value="">-- Choose --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="sectionSelectForGrading">Section</label>
+                                <select id="sectionSelectForGrading">
+                                    <option value="">-- Choose --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gradingSubjectSelect">Subject</label>
+                                <select id="gradingSubjectSelect">
+                                    <option value="">-- Choose --</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="gradingTermSelect">Term</label>
+                                <select id="gradingTermSelect">
+                                    <option value="Term1">Term1</option>
+                                    <option value="Term2">Term2</option>
+                                </select>
+                            </div>
+                        </div>
+                        <button id="loadStudentsBtn" class="btn btn-primary" type="button">Load Students</button>
+                        <div id="gradingScoresMessage" class="message" style="display:none;"></div>
+                    </div>
+
+                    <div id="gradingTableSection" class="card" style="display:none;">
+                        <h3>Grade Table</h3>
+                        <div class="table-container">
+                            <table id="gradingTable" class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th><input type="checkbox" id="selectAllStudentsForGrade"></th>
+                                        <th>Student Username</th>
+                                        <th>Name</th>
+                                        <th>Grade</th>
+                                        <th>Assignment /10</th>
+                                        <th>Mid /30</th>
+                                        <th>Final /60</th>
+                                        <th>Total</th>
+                                        <th>Letter</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="gradingTableBody"></tbody>
+                            </table>
+                        </div>
+                        <button id="submitGradesBtn" class="btn btn-primary" type="button">Submit Selected Grades</button>
+                        <div id="gradingBulkMessage" class="message" style="display:none;"></div>
+                    </div>
+                </section>
+
+                <section id="announcements" class="page">
+                    <div class="page-header">
+                        <h2>Announcements</h2>
+                        <button id="openAnnouncementModalBtn" class="btn btn-primary" type="button">
+                            <i class="fas fa-plus"></i>
+                            New Announcement
+                        </button>
+                    </div>
+                    <div id="announcementsContainer" class="announcements-container"></div>
+                </section>
+
+                <section id="profile" class="page">
+                    <div class="page-header">
+                        <h2>Teacher Profile</h2>
+                    </div>
+                    <div class="card profile-card">
+                        <div class="profile-header">
+                            <div id="profileAvatar" class="profile-avatar profile-avatar-icon" aria-label="Profile">
+                                <i class="fas fa-user-circle"></i>
+                            </div>
+                            <div class="profile-info">
+                                <h3 id="profileName">-</h3>
+                                <p id="profileDept">-</p>
+                                <p id="profileEmpID">-</p>
+                            </div>
+                        </div>
+
+                        <div class="profile-details">
+                            <div class="detail-row">
+                                <label>Email:</label>
+                                <p id="profileEmail">-</p>
+                            </div>
+                            <div class="detail-row">
+                                <label>Phone:</label>
+                                <p id="profilePhone">-</p>
+                            </div>
+                            <div class="detail-row">
+                                <label>Office:</label>
+                                <p id="profileOffice">-</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="announcementModal" class="modal" style="display:none;">
+        <div class="modal-box">
+            <h3>New Announcement</h3>
+
+            <div class="form-group">
+                <label for="announcementTargetMode">Target Mode</label>
+                <select id="announcementTargetMode">
+                    <option value="single">Single Class</option>
+                    <option value="multiple">Multiple Classes</option>
+                    <option value="all_assigned">All Classes</option>
+                </select>
+            </div>
+
+            <div id="announcementSingleClassGroup" class="form-group">
+                <label for="announcementClassSelect">Class</label>
+                <select id="announcementClassSelect">
+                    <option value="">-- Choose --</option>
+                </select>
+            </div>
+
+            <div id="announcementMultiClassGroup" class="form-group" style="display:none;">
+                <label for="announcementClassMultiSelect">Classes</label>
+                <select id="announcementClassMultiSelect" multiple size="5"></select>
+            </div>
+
+            <div class="form-group">
+                <label for="announcementTitle">Title</label>
+                <input type="text" id="announcementTitle">
+            </div>
+
+            <div class="form-group">
+                <label for="announcementContent">Message</label>
+                <textarea id="announcementContent" rows="4"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="announcementFile">Attach File (optional)</label>
+                <input type="file" id="announcementFile">
+                <div id="announcementFilePreview" style="display:none; margin-top:6px;">
+                    <span id="announcementFileName"></span>
+                    <button id="removeAnnouncementFileBtn" type="button" class="btn">Remove</button>
+                </div>
+            </div>
+
+            <div id="announcementInlineMessage" class="message" style="display:none;"></div>
+
+            <div class="modal-actions">
+                <button id="closeAnnouncementModalBtn" class="btn" type="button">Cancel</button>
+                <button id="postAnnouncementBtn" class="btn btn-primary" type="button">Post</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="teacher-script.js?v=20260520-1"></script>
+</body>
+</html>
+
+
